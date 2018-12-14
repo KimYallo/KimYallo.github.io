@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "SSAA_project(스마트 센서와 액츄에이터)"
-image: header.jpg
+image: 스크린샷 2018-12-14 오후 2.08.23.png
 video: false
 ---
 ### Code
