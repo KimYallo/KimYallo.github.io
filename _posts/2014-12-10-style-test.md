@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Style Test"
+title: "SSAA_project(스마트 센서와 액츄에이터)"
 image: header.jpg
 video: false
 ---
@@ -107,11 +107,80 @@ highlight a block of code. Because we have more specific typographic needs for c
 
 
 {% highlight css %}
-#container {
-  float: left;
-  margin: 0 -240px 0 0;
-  width: 100%;
+#pragma config(Sensor, S1, c1, sensorEV3_Color)
+#pragma config(Sensor, S2, c2, sensorEV3_Color)
+#pragma config(Motor,motorB,lm,tmotorEV3_Large, PIDControl, encoder)
+#pragma config(Motor,motorC,rm,tmotorEV3_Large, PIDControl, encoder)
+
+int nMotorSpeedSetting = 55;
+int error = 0,sum=0,diff=0,last_error=0;
+float Kp=0.9,Kd=260,Ki=Kp*Kp/(4*Kd);
+
+int Bound1(){
+   int bound;
+   int black=0;
+   int white=0;
+   while(getButtonPress(buttonEnter)==0){ }
+      for(int i=0;i<5;i++){
+         white+=getColorReflected(c1);
+         sleep(10);
+         playTone(240,20);sleep(500);
+      }
+   while(getButtonPress(buttonEnter)==0){ }
+      for(int i=0;i<5;i++){
+         black+=getColorReflected(c1);
+         sleep(10);
+         playTone(240,20);sleep(500);
+      }
+   bound = (white/5 + black/5)/2;
+   return bound;
 }
+
+void go(int bound)
+{
+
+   error = getColorReflected(c1) - bound;
+   sum = sum + error;
+   diff = error - last_error;
+   setMotorSpeed(lm, nMotorSpeedSetting - (error*Kp+sum*Ki+diff*Kd));
+   setMotorSpeed(rm, nMotorSpeedSetting + (error*Kp+sum*Ki+diff*Kd));
+   last_error = error;
+}
+
+void stopMotor(){
+   setMotorSpeed(lm,0);
+   setMotorSpeed(rm,0);
+}
+
+task main()
+{
+    int bound = Bound1();
+   while(true)
+   {
+      go(bound);
+      if((getColorReflected(c1)<bound) && (getColorReflected(c2)<bound)){
+         setMotorSpeed(lm,10);
+         setMotorSpeed(rm,10);
+         sleep(850);
+         if((getColorReflected(c1)<bound) && (getColorReflected(c2)<bound)){
+            setMotorSpeed(lm,10);
+            setMotorSpeed(rm,10);
+            sleep(1500);
+            setMotorSpeed(lm,10);
+            setMotorSpeed(rm,-10);
+            sleep(2600);
+            setMotorSpeed(lm,-10);
+            setMotorSpeed(rm,10);
+            sleep(4800);
+               stopMotor();
+          }
+          break;
+       }
+   }
+   playTone(240,20);sleep(200);
+   stopMotor();
+}
+
 {% endhighlight %}
 
 * * *
