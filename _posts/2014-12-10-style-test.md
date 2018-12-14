@@ -106,7 +106,7 @@ filter](http://jekyllrb.com/docs/templates/#code-snippet-highlighting) to
 highlight a block of code. Because we have more specific typographic needs for code, we’ll specify Consolas and Monaco ahead of the browser-defined monospace font.
 
 
-{% highlight css %}
+{% highlight ruby %}
 #pragma config(Sensor, S1, c1, sensorEV3_Color)
 #pragma config(Sensor, S2, c2, sensorEV3_Color)
 #pragma config(Motor,motorB,lm,tmotorEV3_Large, PIDControl, encoder)
